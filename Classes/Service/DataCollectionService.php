@@ -1,8 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace TRAW\PowermailSalesforce\Service;
 
+use In2code\Powermail\Domain\Model\Answer;
 use In2code\Powermail\Domain\Model\Mail;
 use TRAW\PowermailSalesforce\Domain\Model\Field;
 use TRAW\PowermailSalesforce\Domain\Model\Form;
@@ -17,8 +19,8 @@ class DataCollectionService
 
     public function __construct(
         private readonly Mail  $mail,
-        private readonly array $configuration)
-    {
+        private readonly array $configuration,
+    ) {
         $this->connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
     }
 
@@ -41,33 +43,91 @@ class DataCollectionService
         return $data;
     }
 
+    public function collectDataForWebToCase(array $defaults): array
+    {
+        $data = $defaults;
+
+        $this->extractAnswerData($this->mail->getAnswers(), $data, true);
+
+        // concatenate multiselect values with ;
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $data[$key] = implode(';', $value);
+            }
+        }
+
+        // don't include empty fields, for validation on SalesForce
+        // will fail for empty strings for date fields
+        $data = array_filter($data);
+
+        return $data;
+    }
+
+    public function extractFileFields(): array
+    {
+        $files = [];
+        $uploadFolder = $this->getUploadFolder();
+
+        foreach ($this->mail->getAnswers() as $answer) {
+            /** @var Answer $answer */
+            if ($answer->getValueType() !== Answer::VALUE_TYPE_UPLOAD) {
+                continue;
+            }
+
+            $value = $answer->getValue();
+            $fileNames = is_array($value) ? $value : [$value];
+
+            foreach ($fileNames as $fileName) {
+                if (empty($fileName)) {
+                    continue;
+                }
+                $filePath = GeneralUtility::getFileAbsFileName($uploadFolder . $fileName);
+                if (file_exists($filePath)) {
+                    $files[] = [
+                        'path' => $filePath,
+                        'name' => $fileName,
+                    ];
+                }
+            }
+        }
+
+        return $files;
+    }
+
     public function getSalesforceFormProperties($form): array
     {
         if (ExtensionManagementUtility::isLoaded('extender')) {
             /** @var Form $form */
             return $form->getSfFormProperties();
         } else {
-            $formProperties = $this->getFieldFromDb($form, ['sf_oid', 'sf_enable']);
+            $formProperties = $this->getFieldFromDb($form, ['sf_oid', 'sf_enable', 'sf_mode', 'sf_record_type_id']);
 
             return [
                 'enable' => (bool)($formProperties['sf_enable'] ?? false),
                 'oid' => $formProperties['sf_oid'] ?? null,
+                'mode' => $formProperties['sf_mode'] ?? 'web2lead',
+                'recordTypeId' => $formProperties['sf_record_type_id'] ?? '',
             ];
         }
     }
 
-    private function extractAnswerData(array|ObjectStorage $answers, array &$data)
+    private function extractAnswerData(array|ObjectStorage $answers, array &$data, bool $skipFiles = false): void
     {
         foreach ($answers as $answer) {
+            /** @var Answer $answer */
+            if ($skipFiles && $answer->getValueType() === Answer::VALUE_TYPE_UPLOAD) {
+                continue;
+            }
+
             /** @var Field $field */
             $field = $answer->getField();
-            if(ExtensionManagementUtility::isLoaded('extender')) {
+            if (ExtensionManagementUtility::isLoaded('extender')) {
                 $sfFieldName = $field->getSfFieldname();
-            }else {
+            } else {
                 $sfFieldName = $this->getFieldFromDb($field, 'sf_fieldname');
             }
 
-            if(!empty($sfFieldName)) {
+            if (!empty($sfFieldName)) {
                 $data[$sfFieldName] = $sfFieldName === 'email' || $field->isSenderEmail() ? strtolower($answer->getValue()) : $answer->getValue();
             }
         }
@@ -120,5 +180,10 @@ class DataCollectionService
             . ($parts['path'] ?? '')
             . (!empty($parts['query']) ? "?{$parts['query']}" : '')
             . (isset($parts['fragment']) ? "#{$parts['fragment']}" : '');
+    }
+
+    private function getUploadFolder(): string
+    {
+        return $this->configuration['misc']['uploadFolder'] ?? 'uploads/tx_powermail/';
     }
 }

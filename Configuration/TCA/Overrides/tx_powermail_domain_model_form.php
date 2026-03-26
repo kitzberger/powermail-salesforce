@@ -20,6 +20,25 @@ call_user_func(function ($_EXTKEY = 'lin_salesforce', string $table = 'tx_powerm
             ],
             'onChange' => 'reload',
         ],
+        'sf_mode' => [
+            'exclude' => true,
+            'label' => $LLL . ':tca.' . $table . '.sf_mode',
+            'description' => $LLL . ':tca.' . $table . '.sf_mode.description',
+            'config' => [
+                'type' => 'select',
+                'renderType' => 'selectSingle',
+                'items' => [
+                    ['label' => $LLL . ':tca.' . $table . '.sf_mode.web2lead', 'value' => 'web2lead'],
+                    ['label' => $LLL . ':tca.' . $table . '.sf_mode.web2case', 'value' => 'web2case'],
+                ],
+                'default' => 'web2lead',
+                'behaviour' => [
+                    'allowLanguageSynchronization' => true,
+                ],
+            ],
+            'displayCond' => 'FIELD:sf_enable:REQ:true',
+            'onChange' => 'reload',
+        ],
         'sf_oid' => [
             'exclude' => true,
             'label' => $LLL . ':tca.' . $table . '.sf_oid',
@@ -32,14 +51,38 @@ call_user_func(function ($_EXTKEY = 'lin_salesforce', string $table = 'tx_powerm
                     'allowLanguageSynchronization' => true,
                 ],
             ],
-            'displayCond' => 'FIELD:sf_enable:REQ:true',
+            'displayCond' => [
+                'AND' => [
+                    'FIELD:sf_enable:REQ:true',
+                    'FIELD:sf_mode:=:web2lead',
+                ],
+            ],
+        ],
+        'sf_record_type_id' => [
+            'exclude' => true,
+            'label' => $LLL . ':tca.' . $table . '.sf_record_type_id',
+            'description' => $LLL . ':tca.' . $table . '.sf_record_type_id.description',
+            'config' => [
+                'type' => 'input',
+                'eval' => 'trim',
+                'max' => 100,
+                'behaviour' => [
+                    'allowLanguageSynchronization' => true,
+                ],
+            ],
+            'displayCond' => [
+                'AND' => [
+                    'FIELD:sf_enable:REQ:true',
+                    'FIELD:sf_mode:=:web2case',
+                ],
+            ],
         ],
     ]);
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette(
         $table,
         'tx_linsalesforce_fields',
-        'sf_enable,sf_oid'
+        'sf_enable,sf_mode,sf_oid,sf_record_type_id'
     );
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(

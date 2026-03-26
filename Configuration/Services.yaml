@@ -11,6 +11,9 @@ services:
   TRAW\PowermailSalesforce\Service\RequestService:
     public: true
 
+  TRAW\PowermailSalesforce\Service\OAuthService:
+    public: true
+
   TRAW\PowermailSalesforce\Domain\Model\Field:
     tags:
       - name: 'extender.extends'

@@ -9,6 +9,10 @@ class Form extends \In2code\Powermail\Domain\Model\Form
 
     protected int $sfEnable = 0;
 
+    protected string $sfMode = 'web2lead';
+
+    protected string $sfRecordTypeId = '';
+
     public function getSfOid(): string
     {
         return $this->sfOid;
@@ -29,11 +33,33 @@ class Form extends \In2code\Powermail\Domain\Model\Form
         $this->sfEnable = $sfEnable;
     }
 
+    public function getSfMode(): string
+    {
+        return $this->sfMode;
+    }
+
+    public function setSfMode(string $sfMode): void
+    {
+        $this->sfMode = $sfMode;
+    }
+
+    public function getSfRecordTypeId(): string
+    {
+        return $this->sfRecordTypeId;
+    }
+
+    public function setSfRecordTypeId(string $sfRecordTypeId): void
+    {
+        $this->sfRecordTypeId = $sfRecordTypeId;
+    }
+
     public function getSfFormProperties(): array
     {
         return [
             'enable' => $this->sfEnable,
             'oid' => $this->sfOid,
+            'mode' => $this->sfMode,
+            'recordTypeId' => $this->sfRecordTypeId,
         ];
     }
 }

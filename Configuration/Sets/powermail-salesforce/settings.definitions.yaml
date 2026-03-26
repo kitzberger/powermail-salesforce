@@ -23,3 +23,23 @@ settings:
     default: ''
     label: Debug email address
     category: powermailsalesforce
+  plugin.tx_powermailsalesforce.web2case.instanceUrl:
+    type: string
+    default: ''
+    label: 'Web-to-Case: Salesforce Instance URL'
+    category: powermailsalesforce
+  plugin.tx_powermailsalesforce.web2case.clientId:
+    type: string
+    default: ''
+    label: 'Web-to-Case: OAuth2 Client ID'
+    category: powermailsalesforce
+  plugin.tx_powermailsalesforce.web2case.clientSecret:
+    type: string
+    default: ''
+    label: 'Web-to-Case: OAuth2 Client Secret'
+    category: powermailsalesforce
+  plugin.tx_powermailsalesforce.web2case.apiVersion:
+    type: string
+    default: 'v64.0'
+    label: 'Web-to-Case: Salesforce API Version'
+    category: powermailsalesforce

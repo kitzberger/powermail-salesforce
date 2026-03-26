@@ -13,11 +13,29 @@
             <trans-unit id="tca.tx_powermail_domain_model_form.sf_enable.description" resname="tca.tx_powermail_domain_model_form.sf_enable.description">
                 <source>The submitted data for this form should also be sent to Salesforce. Make sure to fill in the salesforce fieldnames for each field that should be transferred.</source>
             </trans-unit>
+            <trans-unit id="tca.tx_powermail_domain_model_form.sf_mode" resname="tca.tx_powermail_domain_model_form.sf_mode">
+                <source>Salesforce Mode</source>
+            </trans-unit>
+            <trans-unit id="tca.tx_powermail_domain_model_form.sf_mode.description" resname="tca.tx_powermail_domain_model_form.sf_mode.description">
+                <source>Select whether this form sends data via Web-to-Lead (simple POST) or Web-to-Case (REST API with OAuth2).</source>
+            </trans-unit>
+            <trans-unit id="tca.tx_powermail_domain_model_form.sf_mode.web2lead" resname="tca.tx_powermail_domain_model_form.sf_mode.web2lead">
+                <source>Web-to-Lead</source>
+            </trans-unit>
+            <trans-unit id="tca.tx_powermail_domain_model_form.sf_mode.web2case" resname="tca.tx_powermail_domain_model_form.sf_mode.web2case">
+                <source>Web-to-Case (REST API)</source>
+            </trans-unit>
             <trans-unit id="tca.tx_powermail_domain_model_form.sf_oid" resname="tca.tx_powermail_domain_model_form.sf_oid">
                 <source>Salesforce Organization ID (OID)</source>
             </trans-unit>
             <trans-unit id="tca.tx_powermail_domain_model_form.sf_oid.description" resname="tca.tx_powermail_domain_model_form.sf_oid.description">
                 <source></source>
+            </trans-unit>
+            <trans-unit id="tca.tx_powermail_domain_model_form.sf_record_type_id" resname="tca.tx_powermail_domain_model_form.sf_record_type_id">
+                <source>Salesforce Case RecordTypeId</source>
+            </trans-unit>
+            <trans-unit id="tca.tx_powermail_domain_model_form.sf_record_type_id.description" resname="tca.tx_powermail_domain_model_form.sf_record_type_id.description">
+                <source>The Salesforce RecordTypeId for the Case object. Leave empty to use the default record type.</source>
             </trans-unit>
             <trans-unit id="tca.tx_powermail_domain_model_field.sf_fieldname" resname="tca.tx_powermail_domain_model_field.sf_fieldname">
                 <source>Salesforce field name</source>

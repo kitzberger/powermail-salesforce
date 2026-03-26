@@ -9,6 +9,12 @@ plugin.tx_powermail.settings.setup {
                     targetUrl = {$plugin.tx_powermailsalesforce.settings.debug.targetUrl}
                     email = {$plugin.tx_powermailsalesforce.settings.debug.email}
                 }
+                web2case {
+                    instanceUrl = {$plugin.tx_powermailsalesforce.settings.web2case.instanceUrl}
+                    clientId = {$plugin.tx_powermailsalesforce.settings.web2case.clientId}
+                    clientSecret = {$plugin.tx_powermailsalesforce.settings.web2case.clientSecret}
+                    apiVersion = {$plugin.tx_powermailsalesforce.settings.web2case.apiVersion}
+                }
             }
         }
     }

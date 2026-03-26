@@ -11,5 +11,16 @@ plugin.tx_powermailsalesforce {
             #cat=PowermailSalesforce/advanced/c; type=string; label=Debug email address
             email =
         }
+
+        web2case {
+            #cat=PowermailSalesforce/web2case/a; type=string; label=Salesforce Instance URL
+            instanceUrl =
+            #cat=PowermailSalesforce/web2case/b; type=string; label=OAuth2 Client ID
+            clientId =
+            #cat=PowermailSalesforce/web2case/c; type=string; label=OAuth2 Client Secret
+            clientSecret =
+            #cat=PowermailSalesforce/web2case/d; type=string; label=API Version
+            apiVersion = v64.0
+        }
     }
 }
