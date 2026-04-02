@@ -128,7 +128,24 @@ class DataCollectionService
             }
 
             if (!empty($sfFieldName)) {
-                $data[$sfFieldName] = $sfFieldName === 'email' || $field->isSenderEmail() ? strtolower($answer->getValue()) : $answer->getValue();
+                if ($answer->getValueType() === Answer::VALUE_TYPE_DATE) {
+                    // getValue() would process the unix timestamp via
+                    // LocalizationUtility::translate('datepicker_format_date')
+                    // so we work with the raw value instead!
+                    $value = (int)$answer->getRawValue();
+                    $value = match($field->getDatepickerSettings()) {
+                        'date' => date('Y-m-d', $value),
+                        'datetime' => date('Y-m-d h:i A', $value),
+                        'time' => date('h:i A', $value),
+                        default => $value
+                    };
+                } else {
+                    $value = $answer->getValue();
+                }
+                if ($sfFieldName === 'email' || $field->isSenderEmail()) {
+                    $value = strtolower($value);
+                }
+                $data[$sfFieldName] = $value;
             }
         }
     }
